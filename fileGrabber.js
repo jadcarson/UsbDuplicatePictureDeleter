@@ -9,32 +9,41 @@ app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.urlencoded({extended:false}))
 
 var sizes = [];
+var badFiles = [];
+var totalDistance = 0;
 
 app.get('/', (req,res) => {
     console.log("here now")
     var names = getFiles('D:/pictures')
-    console.log(sizes)
-    res.send("length:" + names.length)
+    console.log(badFiles.length)
+    deleteFiles('D:/pictures',names)
+    res.send(badFiles)
 })
 
-function getFiles (dir, files_){
+function getFiles (dir, files_) {
     files_ = files_ || [];
-    var files = fs.readdirSync(dir);
+    let files = fs.readdirSync(dir);
+    let oldName = "";
     for (var i in files){
-        var name = dir + '/' + files[i];
+        totalDistance++;
+        let name = dir + '/' + files[i];
         if (fs.statSync(name).isDirectory()){
             getFiles(name, files_);
         } else {
             sizes.push(fs.statSync(name)['size'])
-            if(i> 0 && sizes[i] === sizes[i-1]){
-                files_.push(name);    
+            if(totalDistance > 0 && oldName !== "" && fs.statSync(oldName)['size'] === fs.statSync(name)['size']){
+                badFiles.push(name);
             }else {
                 files_.push(name);    
             }
-            
+            oldName = dir + '/' + files[i];
         }
     }
     return files_;
+}
+
+function deleteFiles (dir, fileArray) {
+
 }
 
 
