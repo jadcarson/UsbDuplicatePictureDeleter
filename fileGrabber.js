@@ -8,10 +8,12 @@ const app = express();
 app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.urlencoded({extended:false}))
 
+var sizes = [];
+
 app.get('/', (req,res) => {
     console.log("here now")
     var names = getFiles('D:/pictures')
-    console.log(names)
+    console.log(sizes)
     res.send(names)
 })
 
@@ -23,6 +25,7 @@ function getFiles (dir, files_){
         if (fs.statSync(name).isDirectory()){
             getFiles(name, files_);
         } else {
+            sizes.push(fs.statSync(name)['size'])
             files_.push(name);
         }
     }
