@@ -14,7 +14,7 @@ app.get('/', (req,res) => {
     console.log("here now")
     var names = getFiles('D:/pictures')
     console.log(sizes)
-    res.send(names)
+    res.send("length:" + names.length)
 })
 
 function getFiles (dir, files_){
@@ -26,7 +26,12 @@ function getFiles (dir, files_){
             getFiles(name, files_);
         } else {
             sizes.push(fs.statSync(name)['size'])
-            files_.push(name);
+            if(i> 0 && sizes[i] === sizes[i-1]){
+                files_.push(name);    
+            }else {
+                files_.push(name);    
+            }
+            
         }
     }
     return files_;
