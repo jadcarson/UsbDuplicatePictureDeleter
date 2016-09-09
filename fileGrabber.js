@@ -43,7 +43,10 @@ function getFiles (dir, files_) {
 }
 
 function deleteFiles (dir, fileArray) {
-
+    console.log(badFiles)
+    for( var i = 0; i< badFiles.length; i++) {
+        fs.unlinkSync(badFiles[i])
+    }
 }
 
 
